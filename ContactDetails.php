@@ -16,15 +16,17 @@ class ContactDetails extends Connection
         $email = isset($data['email']) ? $conn->real_escape_string($data['email']) : NULL;
         $phone = isset($data['phone']) ? $conn->real_escape_string($data['phone']) : NULL;
 
+        // die($email) ;
         $sql = "INSERT INTO $this->table (full_name, email, phone)
                 VALUES ('$name' , '$email' , '$phone')";
 
         //if Insert is successfull return success along with inserted row id
         if ($conn->query($sql)) {
-            $id = $conn->insert_id ;
-            return ["Success" => "Successfully entered $name with id: $id "] ;
+            $data['id'] = $conn->insert_id ;
+            // die(print_r($data)) ;
+            return $data;
         } else {
-            $data = [   'error' => $conn->error ] ;
+            $data = [ 'error' => $conn->error ] ;
             return $data;
         }
     }
@@ -44,7 +46,8 @@ class ContactDetails extends Connection
     {
         $conn = $this->connection;
         $sql = "SELECT * from $this->table
-                LIMIT $start, $limit" ;
+                ORDER BY id DESC
+                LIMIT $start, $limit " ;
         $rows = $conn->query($sql)->fetch_all(MYSQLI_ASSOC) ;
         return $rows ;
     }

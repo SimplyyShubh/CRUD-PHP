@@ -16,7 +16,6 @@ if (!empty($action)) {
         else {
             $data = "";
             foreach ($rows as $row) {
-                // die(print_r($row)) ;
                 $str = "<tr><th>" . $row['id'] . "</th>
                 <td>" . $row['full_name'] . "</td>
                 <td>" . $row['email'] . "</td>
@@ -27,5 +26,14 @@ if (!empty($action)) {
             }
             exit($data);
         }
+    }
+
+    if($action == "insertRow"){
+        $inputs = ['name' => $_POST['name'],
+                 'email' => $_POST['email'],
+                 'phone' => $_POST['phone']] ;
+
+        $data = $Details->insertRow($inputs) ;
+       exit(json_encode($data)) ;
     }
 }
