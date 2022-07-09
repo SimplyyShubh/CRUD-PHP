@@ -1,20 +1,25 @@
 $(document).ready(() => {
-    getExistingData(0, 10) ;
+    $('#load').on('click', function(){
+        getExistingData(0, 10) ;
+    })
 });
 
+// Get exisiting data from DB and load it into html till all data is loaded.
 function getExistingData(start, limit) {
   $.ajax({
     url: "ajax.php",
     method: "post",
-    dataType: "text",
+    dataType: "TEXT",
     data: {
-      key: "getData",
+      action: "getData",
       start: start,
       limit: limit,
     },
     success: (data) => {
+        console.info(data) ;
+        
       if (data != "end") {
-        $(tbody).append(data);
+        $('tbody').append(data);
         start += limit;
         getExistingData(start, limit);
       }

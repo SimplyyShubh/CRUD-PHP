@@ -40,8 +40,13 @@ class ContactDetails extends Connection
     }
 
     //get All the rows till the limit
-    public function getRows($limit = 10)
+    public function getRows($start = 0, $limit = 10)
     {
+        $conn = $this->connection;
+        $sql = "SELECT * from $this->table
+                LIMIT $start, $limit" ;
+        $rows = $conn->query($sql)->fetch_all(MYSQLI_ASSOC) ;
+        return $rows ;
     }
 
     //Delete a row providing the id 
