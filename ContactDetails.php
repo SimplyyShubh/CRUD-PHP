@@ -9,6 +9,7 @@ class ContactDetails extends Connection
     //inserting a row to the Table
     public  function insertRow($data)
     {
+        // die(print_r($data)) ;
         $conn = $this->connection;
 
         //Escape String according to the connection present and store NULL if not present.
@@ -23,10 +24,9 @@ class ContactDetails extends Connection
         //if Insert is successfull return success along with inserted row id
         if ($conn->query($sql)) {
             $data['id'] = $conn->insert_id ;
-            // die(print_r($data)) ;
             return $data;
         } else {
-            $data = [ 'error' => $conn->error ] ;
+            $data['error'] = $conn->error  ;
             return $data;
         }
     }

@@ -1,4 +1,6 @@
 <?php
+require_once "HelperFunctions.php" ;
+
 $action = $_REQUEST['action'];
 
 if (!empty($action)) {
@@ -9,14 +11,16 @@ if (!empty($action)) {
     if ($action == "getData") {
 
         $rows = $Details->getRows($_REQUEST['start'], $_REQUEST['limit']);
-        
+
         if (empty($rows))
             exit("end");
 
         else {
             $data = "";
             foreach ($rows as $row) {
-                $str = "<tr><th>" . $row['id'] . "</th>
+                //append db id to the TableRow 
+                $str = "<tr id='row-" . $row['id'] . "'> 
+                <th>" . $row['id'] . "</th>
                 <td>" . $row['full_name'] . "</td>
                 <td>" . $row['email'] . "</td>
                 <td>" . $row['phone'] . "</td>
@@ -28,12 +32,28 @@ if (!empty($action)) {
         }
     }
 
-    if($action == "insertRow"){
-        $inputs = ['name' => $_POST['name'],
-                 'email' => $_POST['email'],
-                 'phone' => $_POST['phone']] ;
+    if ($action == "insertRow") {
+        $data = [
+            'name' => $_POST['name'],
+            'email' => $_POST['email'],
+            'phone' => $_POST['phone']
+        ];
 
-        $data = $Details->insertRow($inputs) ;
-       exit(json_encode($data)) ;
+        $data['error'] = 0;
+
+        $data = validateInputs($data);
+
+        //If Validation succeeds and no error occurs then Insert Row
+        if ($data['error'] == 0) {
+            $data = $Details->insertRow($data);
+        } else {
+            $data['err'] = "";
+            foreach ($data['error_status'] as $err) {
+                // var_dump($err) ;
+                $data['err'] .= $err . "\n" ;
+            }
+        }
+
+        exit(json_encode($data));
     }
 }
